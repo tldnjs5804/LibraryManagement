@@ -50,13 +50,20 @@ public class LibraryMain {
             System.out.println("\n========= CSV 로그인 시스템 =========");
             System.out.print("아이디: ");
             String id = sc.nextLine();
+
+            // ✅ 추가: ID 첫 글자가 숫자인지 검사
+            if (!id.isEmpty() && Character.isDigit(id.charAt(0))) {
+                System.out.println("[오류] 아이디는 숫자로 시작할 수 없습니다. 다시 입력하세요.");
+                continue;
+            }
+
             System.out.print("비밀번호: ");
             String pw = sc.nextLine();
 
             if (manager.login(id, pw)) return true;
             System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
         }
-    }
+    }1
 
     /**
      * 입력된 선택 번호와 사용자 권한에 따라 적절한 UI 기능을 호출합니다.
