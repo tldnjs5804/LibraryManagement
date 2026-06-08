@@ -46,14 +46,33 @@ public class LibraryMain {
      * @see LibraryManager#login(String, String)
      */
     private static boolean performLogin() {
+        final int MAX_ATTEMPTS = 5;           // ✅ 최대 시도 횟수
+        final long LOCK_DURATION_MS = 30000;  // ✅ 잠금 시간 30초
+
+        int attempts = 0;
+
         while (true) {
-            System.out.println("\n========= CSV 로그인 시스템 =========");
+            // ✅ 최대 시도 횟수 초과 시 잠금
+            if (attempts >= MAX_ATTEMPTS) {
+                System.out.println("[보안] 로그인 시도 " + MAX_ATTEMPTS + "회 초과.");
+                System.out.println("[보안] " + (LOCK_DURATION_MS / 1000) + "초 후 다시 시도하세요.");
+
+                try {
+                    Thread.sleep(LOCK_DURATION_MS); // ✅ 30초 강제 대기
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                attempts = 0; // ✅ 잠금 해제 후 횟수 초기화
+            }
+
+            System.out.println("\n========= 로그인 시스템 =========");
+            System.out.printf("[알림] 남은 시도 횟수: %d회\n", MAX_ATTEMPTS - attempts);
             System.out.print("아이디: ");
             String id = sc.nextLine();
 
-            // ✅ 추가: ID 첫 글자가 숫자인지 검사
             if (!id.isEmpty() && Character.isDigit(id.charAt(0))) {
-                System.out.println("[오류] 아이디는 숫자로 시작할 수 없습니다. 다시 입력하세요.");
+                System.out.println("[오류] 아이디는 숫자로 시작할 수 없습니다.");
                 continue;
             }
 
@@ -61,9 +80,13 @@ public class LibraryMain {
             String pw = sc.nextLine();
 
             if (manager.login(id, pw)) return true;
-            System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
+
+            attempts++; // ✅ 실패 시 카운트 증가
+            System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다. "
+                    + "(" + attempts + "/" + MAX_ATTEMPTS + ")");
         }
-    }1
+    }
+
 
     /**
      * 입력된 선택 번호와 사용자 권한에 따라 적절한 UI 기능을 호출합니다.
