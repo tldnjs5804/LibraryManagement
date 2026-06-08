@@ -12,8 +12,8 @@ public class LibraryRepository {
      * MariaDB 연결을 위한 전용 메소드입니다.
      * <p>JDBC 드라이버를 로드하고 설정된 정보를 바탕으로 {@link Connection} 객체를 생성합니다.</p>
      * * @return 데이터베이스 연결 객체
-     * @throws SQLException 드라이버 로드 실패 또는 연결 정보가 부적절할 경우 발생
      *
+     * @throws SQLException 드라이버 로드 실패 또는 연결 정보가 부적절할 경우 발생
      * @see <a href="https://mariadb.com/kb/en/about-mariadb-connector-j/">MariaDB Connector/J Documentation</a>
      */
     private Connection getConnection() throws SQLException {
@@ -97,9 +97,11 @@ public class LibraryRepository {
             return false;
         }
     }
+
     /**
      * 데이터베이스로부터 모든 도서 정보를 조회하여 메모리에 로드합니다.
      * * @return 도서 ID를 키로 하는 도서 정보 맵
+     *
      * @see <a href="https://github.com/sumannam/Java/issues/23">Issue #23: 초기 구동 시 DB 데이터 로딩</a>
      */
     public Map<Integer, Book> loadBooks() {
@@ -130,9 +132,9 @@ public class LibraryRepository {
      * <p><b>보안 실습 주의:</b> 현재 이 메소드는 SQL Injection 공격에 취약하도록 의도적으로 설계되었습니다.</p>
      * <p>입력값이 쿼리문에 직접 결합되는 방식의 위험성을 교육하기 위한 용도로만 사용하십시오.</p>
      * * @param id 사용자 아이디
+     *
      * @param pw 사용자 비밀번호
      * @return 인증된 {@link User} 객체 (일치 정보 없을 시 null)
-     *
      * @see <a href="https://github.com/sumannam/Java/issues/40">Issue #40: SQL Injection 취약점 개발</a>
      */
     public User loadUser(String id, String pw) {
@@ -160,3 +162,4 @@ public class LibraryRepository {
         }
         return null;
     }
+}
