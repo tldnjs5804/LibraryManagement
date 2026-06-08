@@ -136,19 +136,18 @@ public class LibraryRepository {
      * @see <a href="https://github.com/sumannam/Java/issues/40">Issue #40: SQL Injection 취약점 개발</a>
      */
     public User loadUser(String id, String pw) {
-        //String sql = "SELECT * FROM users WHERE user_id = ? AND password = ?";
-        String sql = "SELECT * FROM users WHERE user_id = '" + id + "' AND password = '" + pw + "'";
-        //System.out.println(sql);
+        // ✅ ? 플레이스홀더 사용 → 입력값이 SQL 구조에 절대 영향을 줄 수 없음
+        String sql = "SELECT * FROM users WHERE user_id = ? AND password = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+            // ✅ 입력값을 파라미터(데이터)로만 바인딩
             pstmt.setString(1, id);
             pstmt.setString(2, pw);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    // 반환 타입이 User로 바뀌었으므로 이제 에러 없이 정상 작동합니다.
                     return new User(
                             rs.getString("user_id"),
                             rs.getString("password"),
@@ -159,6 +158,5 @@ public class LibraryRepository {
         } catch (SQLException e) {
             System.err.println("[오류] 로그인 조회 실패: " + e.getMessage());
         }
-        return null; // 일치하는 사용자가 없을 때
+        return null;
     }
-}
